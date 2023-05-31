@@ -56,11 +56,6 @@ jobs:
       - name: Directory permission adjustment
         run: chmod -R 777 storage bootstrap/cache
 
-      - name: Create Database
-        run: |
-          mkdir -p database
-          touch database/database.sqlite
-
 #      - name: Create database
 #        env:
 #          DB_CONNECTION: sqlite
