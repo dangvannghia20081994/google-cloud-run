@@ -80,6 +80,6 @@ jobs:
       - name: Deploy Cloud Run
         run: |
           gcloud config set core/project $GCP_PROJECT_ID
-          envsubst < service.yaml > ./service.yaml
+          envsubst < yaml/service.yaml > ./service.yaml
           gcloud run services replace service.yaml --region=asia-east1
 #          gcloud run services update laravel-circleci --add-cloudsql-instances=$GCP_PROJECT_ID:asia-east1:laravel-circleci --region=asia-east1
