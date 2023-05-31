@@ -13,7 +13,7 @@ env:
   GITHUB_SHA: ${{ secrets.GITHUB_SHA }}
   GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
 
-
+jobs:
 #  tests:
 #    runs-on: ubuntu-latest
 #    steps:
@@ -38,9 +38,8 @@ env:
 #        DB_CONNECTION: sqlite
 #        DB_DATABASE: database/database.sqlite
 #      run: vendor/bin/phpunit
-jobs:
   deploy:
-    needs: tests
+#    needs: tests
     runs-on: ubuntu-latest
     steps:
       - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
