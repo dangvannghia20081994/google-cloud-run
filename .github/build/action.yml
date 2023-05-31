@@ -8,27 +8,34 @@ runs:
 
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      shell: bash
 
     - name: Configure PHP env
       run: envsubst < .env.example > .env
+      shell: bash
 
     - name: Directory permission adjustment
       run: chmod -R 777 storage bootstrap/cache
+      shell: bash
 
     - name: Create database
       run: |
         mkdir -p database
         touch database/database.sqlite
+      shell: bash
 
     - name: Run migrate
       env:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: php artisan migrate --seed
+      shell: bash
 
     - name: Generate laravel key
       run: php artisan key:generate
+      shell: bash
 
     - name: Clear laravel config
       run: php artisan config:clear
+      shell: bash
 
