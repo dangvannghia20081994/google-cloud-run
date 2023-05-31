@@ -46,7 +46,7 @@ jobs:
           gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
 
       - name: Docker build image
-        run: docker build --file=Dockerfile -t $GITHUB_REPOSITORY .
+        run: docker build --file=docker/Dockerfile -t $GITHUB_REPOSITORY .
 
       - name: Docker push image to GCR
         run: |
