@@ -1,4 +1,4 @@
-FROM php:8.1-apache-stretch
+FROM php:8.1-apache-buster
 COPY dockers/apache/ /etc/apache2/sites-available/
 #RUN a2enmod rewrite && a2ensite apache
 
