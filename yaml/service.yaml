@@ -2,10 +2,6 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: laravel-circleci
-bindings:
-  - members:
-      - allUsers
-    role: roles/run.invoker
 spec:
   template:
     spec:
