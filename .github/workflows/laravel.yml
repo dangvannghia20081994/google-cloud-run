@@ -17,6 +17,7 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3 # Necessary to access local action
       - name: build app
         uses: ./.github/build
 
@@ -34,6 +35,7 @@ jobs:
     needs: tests
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3 # Necessary to access local action
       - name: build app
         uses: ./.github/build
 
