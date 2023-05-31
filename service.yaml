@@ -6,7 +6,7 @@ spec:
   template:
     spec:
       containers:
-        - image: gcr.io/$STG_GCP_PROJECT_ID/$GITHUB_REPOSITORY:$GITHUB_SHA-$GITHUB_RUN_NUMBER
+        - image: gcr.io/$GCP_PROJECT_ID/$GITHUB_REPOSITORY:$GITHUB_SHA-$GITHUB_RUN_NUMBER
           ports:
             - containerPort: "80"
           resources:
