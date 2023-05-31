@@ -1,0 +1,117 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Laravel Api Documentation",
+        "description": "L5 Swagger",
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0."
+    },
+    "servers": [
+        {
+            "url": "http://localhost",
+            "description": "Demo API Server"
+        }
+    ],
+    "paths": {
+        "/api/v1/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register User",
+                "operationId": "a6b50f9db0d30b7a7f6526e29a5c05cf",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateUserRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CreateUserRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "huunv"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "huunv@gmail.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "123456"
+                    }
+                },
+                "type": "object"
+            },
+            "AuthResource": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": "true"
+                    },
+                    "data": {
+                        "properties": {
+                            "token": {
+                                "type": "string",
+                                "example": "3|PXX3pewsSBbtJhJQXXuRZ1NiLHzTvD6Bv2TBUJjm"
+                            },
+                            "token_type": {
+                                "type": "string",
+                                "example": "Bearer"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    }
+}
