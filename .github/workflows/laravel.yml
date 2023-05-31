@@ -58,6 +58,10 @@ jobs:
 
 #      - name: Run migrate
 #        run: php artisan migrate
+
+      - name: Generate laravel key
+        run: php artisan key:generate
+
       - name: Clear laravel config
         run: php artisan config:clear
 
@@ -81,5 +85,5 @@ jobs:
         run: |
           gcloud config set core/project $GCP_PROJECT_ID
           envsubst < yaml/service.yaml > ./service.yaml
-          gcloud run services replace service.yaml --region=asia-east1 --member="allUsers" --role="roles/run.invoker"
+          gcloud run services replace service.yaml --region=asia-east1
 #          gcloud run services update laravel-circleci --add-cloudsql-instances=$GCP_PROJECT_ID:asia-east1:laravel-circleci --region=asia-east1
