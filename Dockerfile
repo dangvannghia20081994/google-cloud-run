@@ -1,5 +1,5 @@
 FROM php:8.1-apache-buster
-COPY apache.conf /etc/apache2/sites-available/
+COPY apache/ /etc/apache2/sites-available/
 
 COPY . /var/www/html
 # Install system dependencies
