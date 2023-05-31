@@ -7,10 +7,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  laravel-tests:
-
+  tests:
     runs-on: ubuntu-latest
-
     steps:
     - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
       with:
@@ -33,3 +31,40 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: vendor/bin/phpunit
+  deploy:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+        with:
+          php-version: '8.1'
+      - uses: actions/checkout@v3 # Necessary to access local action
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Configure PHP env (STG)
+        run: envsubst < .env.example > .env
+      - name: Directory permission adjustment
+        run: chmod -R 777 storage bootstrap/cache
+      - name: Clear laravel config
+        run: php artisan config:clear
+
+      - name: Google Authentication
+        run: |
+          echo $JSON_KEY_FILE > $GITHUB_WORKSPACE/gcloud-service-key.json
+          gcloud auth activate-service-account --key-file=$GITHUB_WORKSPACE/gcloud-service-key.json
+          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://gcr.io
+
+      - name: Docker build image
+        run: docker build --file=Dockerfile -t $GITHUB_REPOSITORY .
+      - name: Docker push image to GCR
+        run: |
+          docker tag $GITHUB_REPOSITORY gcr.io/$STG_GCP_PROJECT_ID/$GITHUB_REPOSITORY:$GITHUB_SHA-$GITHUB_RUN_NUMBER
+          docker push gcr.io/$STG_GCP_PROJECT_ID/$GITHUB_REPOSITORY:$GITHUB_SHA-$GITHUB_RUN_NUMBER
+          docker tag $GITHUB_REPOSITORY gcr.io/$STG_GCP_PROJECT_ID/$GITHUB_REPOSITORY:latest
+          docker push gcr.io/$STG_GCP_PROJECT_ID/$GITHUB_REPOSITORY:latest
+      - name: Deploy Cloud Run
+        run: |
+          gcloud config set core/project $STG_GCP_PROJECT_ID
+          envsubst < service.yaml > ./service.yaml
+          gcloud run services replace service.yaml --region=asia-east1
+          gcloud run services update laravel-circleci --add-cloudsql-instances=$STG_GCP_PROJECT_ID:asia-east1:laravel-circleci --region=asia-east1

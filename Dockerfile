@@ -1,30 +1,26 @@
-FROM php:8.1-apache-bullseye
+FROM php:8.1-apache-stretch
+COPY dockers/apache/ /etc/apache2/sites-available/
+#RUN a2enmod rewrite && a2ensite apache
 
-RUN set -x \
-    && docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd --with-libdir=lib/x86_64-linux-gnu/ \
-    && docker-php-ext-configure mysqli --with-mysqli=mysqlnd --with-libdir=lib/x86_64-linux-gnu/ \
-    && docker-php-ext-install pdo_mysql \
-    && docker-php-ext-install mysqli \
-    && docker-php-ext-install opcache \
-    && pecl install redis-5.3.7 \
-    && docker-php-ext-enable redis
-
-RUN set -x \
-    && a2enmod rewrite headers\
-    && a2enconf security \
-    && a2ensite 000-default pa-bmp-front healthcheck
-
-
-# Copy in custom code from the host machine.
-WORKDIR /var/www/html
-COPY . ./
-
-# Use the PORT environment variable in Apache configuration files.
-# https://cloud.google.com/run/docs/reference/container-contract#port
-RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
-
-# Configure PHP for development.
-# Switch to the production php.ini for production operations.
-# RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-# https://github.com/docker-library/docs/blob/master/php/README.md#configuration
-RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+COPY . /var/www/html
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    vim \
+    sudo \
+    unzip \
+    libzip-dev \
+    && docker-php-ext-install zip
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+RUN a2enmod rewrite
+RUN apt-get update && apt-get upgrade -y
+RUN curl -sS https://getcomposer.org/installer -o composer-setup.php
+RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apt-get install -y nodejs
+RUN apt-get install git
