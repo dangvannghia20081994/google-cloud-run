@@ -56,10 +56,10 @@ jobs:
       - name: Directory permission adjustment
         run: chmod -R 777 storage bootstrap/cache
 
-#      - name: Create database
-#        env:
-#          DB_CONNECTION: sqlite
-#          DB_DATABASE: database/database.sqlite
+      - name: Create database
+        run: |
+          mkdir -p database
+          touch database/database.sqlite
 
       - name: Run migrate
         run: php artisan migrate
