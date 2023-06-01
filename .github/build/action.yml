@@ -23,10 +23,8 @@ runs:
       run: |
         mkdir -p database
         touch database/database.sqlite
-        sudo apt-get install php-sqlite3
       env:
         DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
       shell: bash
 
     - name: Run migrate
