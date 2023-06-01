@@ -27,7 +27,7 @@ runs:
     - name: Run migrate
       env:
         DB_CONNECTION: sqlite
-        DB_DATABASE: null
+        DB_DATABASE: './database/database.sqlite'
       run: php artisan migrate --seed
       shell: bash
 
